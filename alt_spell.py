@@ -8,7 +8,7 @@ import re
 import string
 
 
-class Norwig(object):
+class AltSpell(object):
     def __init__(self, word_file):
         with open(word_file, 'r') as f:
             data = f.read()
@@ -55,4 +55,4 @@ class Norwig(object):
         """
         All edits that are two edits away from `word`.
         """
-        return (e2 for e1 in edits1(word) for e2 in self.edits1(e1))
+        return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))

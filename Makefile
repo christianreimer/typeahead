@@ -3,7 +3,7 @@
 all: test flake
 
 test:
-	pytest --cov-report term-missing --cov=. --verbose tests/*
+	pytest --cov-report term-missing --cov=. --verbose tests/*py
 
 flake:
 	@echo 'flak8 output:'
