@@ -3,6 +3,9 @@ Trie datastructure which supports different values (weights) for
 their tokens.
 """
 
+import string
+import itertools
+
 
 EMPTY_RESULT = (False, 0, [''])
 
@@ -20,7 +23,7 @@ class TrieNode(object):
 
 class Trie(object):
     def __init__(self, vocabulary=None):
-        self.root = TrieNode('*', '*')
+        self.root = TrieNode('', '')
         self.tokens = {}
         if vocabulary:
             for word in vocabulary:
@@ -79,6 +82,14 @@ class Trie(object):
         """
         Return the most likely tokens for query_string. Cap the result at
         max_results.
+
+        Example:
+            >>> t = Trie(['green', 'growth', 'grail', 'gummy', 'glad'])
+            >>> t.query('gr')
+            (True, 3, [(1, 'growth'), (1, 'green'), (1, 'grail')])
+            >>> t.add('grand', value=3)
+            >>> t.query('gr', max_results=2)
+            (True, 4, [(3, 'grand'), (1, 'growth')])
         """
         if not self.root.children:
             return EMPTY_RESULT
@@ -98,3 +109,34 @@ class Trie(object):
         tokens = [(self.tokens[t], t) for t in node.tokens]
         tokens = sorted(tokens, reverse=True)
         return True, node.count, tokens[:max_results]
+
+    def lookup_table(self, depth=2, max_results=10):
+        """
+        Generate a lookup table of the possible tokens for all query strings
+        with the indicated depth.
+
+        The table will map from query string to a tuple with the number of
+        tokens the query string is root to, as well as a sorted list of tokens
+        and their value.
+
+        Example:
+            >>> t = Trie()
+            >>> t.add('a')
+            >>> t.add('aa', value=4)
+            >>> t.add('aaa', value=2)
+            >>> table = t.lookup_table()
+            >>> table['a']
+            (3, [(4, 'aa'), (2, 'aaa'), (1, 'a')])
+            >>>
+        """
+        query_strings = []
+        for i in range(depth):
+            query_strings += ["".join(t) for t in 
+                itertools.combinations_with_replacement(string.ascii_lowercase, i+1)]
+        
+        table = {}
+        for qs in query_strings:
+            found, pos_tokens, tokens = self.query(qs, max_results)
+            if found:
+                table[qs] = (pos_tokens, tokens)
+        return table
