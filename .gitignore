@@ -4,3 +4,4 @@ __pycache__
 *.pickle
 *.html
 *.pyc
+.pytest_cache

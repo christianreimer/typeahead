@@ -1,4 +1,4 @@
-.PHONY: test flake clean install
+.PHONY: test flake clean
 
 all: test flake
 
@@ -14,8 +14,3 @@ clean:
 	@find . -name __pycache__ -type d -exec rm -rf {} +
 	@find . -name .cache -type d -exec rm -rf {} +
 	@find . -name .coverage -delete
-
-install:
-	pip install -r requirements.txt
-	pip install -r requirements_test.txt
-	pip install -r requirements_app.txt
