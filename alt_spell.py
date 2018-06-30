@@ -14,6 +14,22 @@ class AltSpell(object):
             data = f.read()
             self.corpus = collections.Counter(re.findall(r'\w+', data.lower()))
         self.sum_words = sum(self.corpus.values())
+    
+    def add(self, word):
+        """
+        Add new word to vocabulary.
+        """
+        self.corpus[word] += 1
+        self.sum_words += 1
+    
+    def remove(self, word):
+        """
+        Remove word from vocabulary.
+        """
+        if not word in self.corpus:
+            raise ValueError(f'{word} not found in corpus')
+        self.sum_words -= self.corpus[word]
+        del self.corpus[word]
 
     def prob(self, word):
         """
