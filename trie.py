@@ -45,8 +45,8 @@ class Trie(object):
         for char in word:
             for child in node.children:
                 if child.character == char:
-                    child.count += 1
                     child.tokens.append(word)
+                    child.count += 1
                     node = child
                     break
             else:
@@ -90,6 +90,8 @@ class Trie(object):
             >>> t.add('grand', value=3)
             >>> t.query('gr', max_results=2)
             (True, 4, [(3, 'grand'), (1, 'growth')])
+            >>> t.query('abc')
+            (False, 0, [''])
         """
         if not self.root.children:
             return EMPTY_RESULT
@@ -127,12 +129,12 @@ class Trie(object):
             >>> table = t.lookup_table()
             >>> table['a']
             (3, [(4, 'aa'), (2, 'aaa'), (1, 'a')])
-            >>>
         """
         query_strings = []
         for i in range(depth):
             query_strings += ["".join(t) for t in 
-                itertools.combinations_with_replacement(string.ascii_lowercase, i+1)]
+                itertools.combinations_with_replacement(
+                    string.ascii_lowercase, i+1)]
         
         table = {}
         for qs in query_strings:
